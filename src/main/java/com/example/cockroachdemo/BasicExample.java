@@ -27,7 +27,7 @@ public class BasicExample implements CommandLineRunner {
         printNumberOfAccounts();
     }
 
-	private void deleteAllAccounts() {
+    private void deleteAllAccounts() {
 		int numDeleted = accountService.deleteAllAccounts();
 		System.out.printf("deleteAllAccounts:\n    => %s total deleted accounts\n", numDeleted);
     }
