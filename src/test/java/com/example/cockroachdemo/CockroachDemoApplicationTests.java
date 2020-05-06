@@ -41,26 +41,26 @@ class CockroachDemoApplicationTests {
         }
     }
 
-	@BeforeEach
-	private void setup() {
-		accountService.createAccountsTable();
-		accountService.deleteAllAccounts();
-	}
+    @BeforeEach
+    private void setup() {
+        accountService.createAccountsTable();
+        accountService.deleteAllAccounts();
+    }
 
-	@Test
-	void contextLoads() {
-		assertThat(true).isTrue();
-	}
+    @Test
+    void contextLoads() {
+        assertThat(true).isTrue();
+    }
 
     @Test
     public void testInserts() {
-		Account account1 = new Account();
-		account1.setId(1);
-		account1.setBalance(1000);
+        Account account1 = new Account();
+        account1.setId(1);
+        account1.setBalance(1000);
 
-		Account account2 = new Account();
-		account2.setId(2);
-		account2.setBalance(250);
+        Account account2 = new Account();
+        account2.setId(2);
+        account2.setBalance(250);
         BatchResults results = accountService.addAccounts(account1, account2);
         
         assertThat(results.getNumberOfBatches()).isEqualTo(1);
@@ -69,13 +69,13 @@ class CockroachDemoApplicationTests {
 
     @Test
     public void testTransfer() {
-		Account account1 = new Account();
-		account1.setId(1);
-		account1.setBalance(1000);
+        Account account1 = new Account();
+        account1.setId(1);
+        account1.setBalance(1000);
 
-		Account account2 = new Account();
-		account2.setId(2);
-		account2.setBalance(250);
+        Account account2 = new Account();
+        account2.setId(2);
+        account2.setBalance(250);
         BatchResults results = accountService.addAccounts(account1, account2);
         
         assertThat(results.getNumberOfBatches()).isEqualTo(1);
