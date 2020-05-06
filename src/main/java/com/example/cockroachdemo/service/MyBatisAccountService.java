@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.function.Function;
 
 import com.example.cockroachdemo.batchmapper.BatchAccountMapper;
 import com.example.cockroachdemo.mapper.AccountMapper;
