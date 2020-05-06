@@ -3,6 +3,7 @@ package com.example.cockroachdemo;
 import java.time.LocalTime;
 
 import com.example.cockroachdemo.model.Account;
+import com.example.cockroachdemo.model.BatchResults;
 import com.example.cockroachdemo.service.AccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +41,8 @@ public class BasicExample implements CommandLineRunner {
 		Account account2 = new Account();
 		account2.setId(2);
 		account2.setBalance(250);
-		int numInserted = accountService.addAccounts(account1, account2);
-		System.out.printf("insertAccounts:\n    => %s total updated accounts\n", numInserted);
+		BatchResults results = accountService.addAccounts(account1, account2);
+		System.out.printf("insertAccounts:\n    => %s total new accounts in %s batches\n", results.getTotalRowsAffected(), results.getNumberOfBatches());
     }
     
     private void printBalances() {
@@ -67,8 +68,8 @@ public class BasicExample implements CommandLineRunner {
     }
 
     private void bulkInsertRandomAccountData() {
-        int totalRowsInserted = accountService.bulkInsertRandomAccountData(500);
-        System.out.printf("bulkInsertRandomAccountData:\n    => finished, %s total rows inserted\n",
-            totalRowsInserted);
+        BatchResults results = accountService.bulkInsertRandomAccountData(500);
+        System.out.printf("bulkInsertRandomAccountData:\n    => finished, %s total rows inserted in %s batches\n",
+            results.getTotalRowsAffected(), results.getNumberOfBatches());
     }
 }

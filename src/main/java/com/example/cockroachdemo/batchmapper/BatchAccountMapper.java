@@ -11,7 +11,7 @@ import org.apache.ibatis.executor.BatchResult;
 
 @Mapper
 public interface BatchAccountMapper {
-    @Insert("upsert into accounts(id, balance) values(#{id}, #{balance,jdbcType=INTEGER})")
+    @Insert("upsert into accounts(id, balance) values(#{id}, #{balance})")
     void insertAccount(Account account);
 
     @Flush

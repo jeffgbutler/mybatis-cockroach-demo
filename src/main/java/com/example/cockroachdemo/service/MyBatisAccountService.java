@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Function;
 
 import com.example.cockroachdemo.batchmapper.BatchAccountMapper;
 import com.example.cockroachdemo.mapper.AccountMapper;
 import com.example.cockroachdemo.model.Account;
+import com.example.cockroachdemo.model.BatchResults;
 
 import org.apache.ibatis.executor.BatchResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +32,16 @@ public class MyBatisAccountService implements AccountService {
 
     @Override
     @Transactional
-    public int addAccounts(Account...accounts) {
+    public BatchResults addAccounts(Account...accounts) {
         for (Account account : accounts) {
             batchMapper.insertAccount(account);
         }
         List<BatchResult> results = batchMapper.flush();
-        return calculateRowsAffected(results);
+
+        return new BatchResults(1, calculateRowsAffectedBySingleBatch(results));
     }
 
-    private int calculateRowsAffected(List<BatchResult> results) {
+    private int calculateRowsAffectedBySingleBatch(List<BatchResult> results) {
         return results.stream()
             .map(BatchResult::getUpdateCounts)
             .flatMapToInt(Arrays::stream)
@@ -47,21 +50,29 @@ public class MyBatisAccountService implements AccountService {
 
     @Override
     @Transactional
-    public int bulkInsertRandomAccountData(int numberToInsert) {
+    public BatchResults bulkInsertRandomAccountData(int numberToInsert) {
         int BATCH_SIZE = 128;
-        List<BatchResult> results = new ArrayList<>();
+        List<List<BatchResult>> results = new ArrayList<>();
 
         for (int i = 0; i < numberToInsert; i++) {
             Account account = new Account();
             account.setId(random.nextInt(1000000000));
             account.setBalance(random.nextInt(1000000000));
             batchMapper.insertAccount(account);
-            if (i % BATCH_SIZE == 0) {
-                results.addAll(batchMapper.flush());
+            if ((i + 1) % BATCH_SIZE == 0) {
+                results.add(batchMapper.flush());
             }
         }
-        results.addAll(batchMapper.flush());
-        return calculateRowsAffected(results);
+        if(numberToInsert % BATCH_SIZE != 0) {
+            results.add(batchMapper.flush());
+        }
+        return new BatchResults(results.size(), calculateRowsAffectedByMultipleBatches(results));
+    }
+
+    private int calculateRowsAffectedByMultipleBatches(List<List<BatchResult>> results) {
+        return results.stream()
+            .mapToInt(this::calculateRowsAffectedBySingleBatch)
+            .sum();
     }
 
     @Override
