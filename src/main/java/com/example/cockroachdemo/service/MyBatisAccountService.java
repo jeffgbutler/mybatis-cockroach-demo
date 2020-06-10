@@ -14,6 +14,7 @@ import com.example.cockroachdemo.model.BatchResults;
 import org.apache.ibatis.executor.BatchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -25,12 +26,13 @@ public class MyBatisAccountService implements AccountService {
     private Random random = new Random();
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createAccountsTable() {
         mapper.createAccountsTable();
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public BatchResults addAccounts(Account...accounts) {
         for (Account account : accounts) {
             batchMapper.insertAccount(account);
@@ -48,7 +50,7 @@ public class MyBatisAccountService implements AccountService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public BatchResults bulkInsertRandomAccountData(int numberToInsert) {
         int BATCH_SIZE = 128;
         List<List<BatchResult>> results = new ArrayList<>();
@@ -75,21 +77,25 @@ public class MyBatisAccountService implements AccountService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Optional<Account> getAccount(int id) {
         return mapper.findAccountById(id);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int transferFunds(int fromId, int toId, int amount) {
         return mapper.transfer(fromId, toId, amount);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public long findCountOfAccounts() {
         return mapper.findCountOfAccounts();
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int deleteAllAccounts() {
         return mapper.deleteAllAccounts();
     }

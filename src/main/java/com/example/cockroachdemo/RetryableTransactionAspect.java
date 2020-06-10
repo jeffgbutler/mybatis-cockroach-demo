@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
  * Aspect with an around advice that intercepts and retries transient concurrency exceptions.
  * Methods matching the pointcut expression (annotated with @Transactional) are retried.
  * <p>
- * This advice needs to runs in a non-transactional context, which is before the underlying
+ * This advice needs to run in a non-transactional context, which is before the underlying
  * transaction advisor (@Order ensures that).
  */
 @Component
