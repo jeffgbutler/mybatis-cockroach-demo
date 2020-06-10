@@ -26,7 +26,7 @@ public class MyBatisAccountService implements AccountService {
     private Random random = new Random();
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void createAccountsTable() {
         mapper.createAccountsTable();
     }
@@ -77,25 +77,25 @@ public class MyBatisAccountService implements AccountService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public Optional<Account> getAccount(int id) {
         return mapper.findAccountById(id);
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public int transferFunds(int fromId, int toId, int amount) {
         return mapper.transfer(fromId, toId, amount);
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public long findCountOfAccounts() {
         return mapper.findCountOfAccounts();
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public int deleteAllAccounts() {
         return mapper.deleteAllAccounts();
     }
