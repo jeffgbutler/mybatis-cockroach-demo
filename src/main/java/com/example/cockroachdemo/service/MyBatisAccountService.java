@@ -26,7 +26,7 @@ public class MyBatisAccountService implements AccountService {
     private Random random = new Random();
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createAccountsTable() {
         mapper.createAccountsTable();
     }
@@ -52,7 +52,6 @@ public class MyBatisAccountService implements AccountService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public BatchResults bulkInsertRandomAccountData(int numberToInsert) {
-        int BATCH_SIZE = 128;
         List<List<BatchResult>> results = new ArrayList<>();
 
         for (int i = 0; i < numberToInsert; i++) {
@@ -60,13 +59,10 @@ public class MyBatisAccountService implements AccountService {
             account.setId(random.nextInt(1000000000));
             account.setBalance(random.nextInt(1000000000));
             batchMapper.insertAccount(account);
-            if ((i + 1) % BATCH_SIZE == 0) {
-                results.add(batchMapper.flush());
-            }
         }
-        if(numberToInsert % BATCH_SIZE != 0) {
-            results.add(batchMapper.flush());
-        }
+
+        results.add(batchMapper.flush());
+
         return new BatchResults(results.size(), calculateRowsAffectedByMultipleBatches(results));
     }
 
@@ -77,25 +73,25 @@ public class MyBatisAccountService implements AccountService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Optional<Account> getAccount(int id) {
         return mapper.findAccountById(id);
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int transferFunds(int fromId, int toId, int amount) {
         return mapper.transfer(fromId, toId, amount);
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public long findCountOfAccounts() {
         return mapper.findCountOfAccounts();
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public int deleteAllAccounts() {
         return mapper.deleteAllAccounts();
     }
