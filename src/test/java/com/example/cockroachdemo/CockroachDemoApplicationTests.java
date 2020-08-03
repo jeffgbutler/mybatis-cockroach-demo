@@ -91,7 +91,7 @@ class CockroachDemoApplicationTests {
     @Test
     public void testMassInsertWith500() {
         BatchResults results = accountService.bulkInsertRandomAccountData(500);
-        assertThat(results.getNumberOfBatches()).isEqualTo(4);
+        assertThat(results.getNumberOfBatches()).isEqualTo(1);
         assertThat(results.getTotalRowsAffected()).isEqualTo(500);
         assertThat(accountService.findCountOfAccounts()).isEqualTo(500);
     }
