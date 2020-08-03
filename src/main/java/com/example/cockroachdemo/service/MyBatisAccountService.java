@@ -52,7 +52,6 @@ public class MyBatisAccountService implements AccountService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public BatchResults bulkInsertRandomAccountData(int numberToInsert) {
-        int BATCH_SIZE = 128;
         List<List<BatchResult>> results = new ArrayList<>();
 
         for (int i = 0; i < numberToInsert; i++) {
@@ -60,13 +59,10 @@ public class MyBatisAccountService implements AccountService {
             account.setId(random.nextInt(1000000000));
             account.setBalance(random.nextInt(1000000000));
             batchMapper.insertAccount(account);
-            if ((i + 1) % BATCH_SIZE == 0) {
-                results.add(batchMapper.flush());
-            }
         }
-        if(numberToInsert % BATCH_SIZE != 0) {
-            results.add(batchMapper.flush());
-        }
+
+        results.add(batchMapper.flush());
+
         return new BatchResults(results.size(), calculateRowsAffectedByMultipleBatches(results));
     }
 
