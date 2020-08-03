@@ -84,8 +84,8 @@ class CockroachDemoApplicationTests {
         int transferAmount = 100;
         int transferredAccounts = accountService.transferFunds(account1.getId(), account2.getId(), transferAmount);
         assertThat(transferredAccounts).isEqualTo(2);
-        assertThat(accountService.getAccount(1).get().getBalance()).isEqualTo(900);
-        assertThat(accountService.getAccount(2).get().getBalance()).isEqualTo(350);
+        assertThat(accountService.getAccount(1)).hasValueSatisfying(a -> assertThat(a.getBalance()).isEqualTo(900));
+        assertThat(accountService.getAccount(2)).hasValueSatisfying(a -> assertThat(a.getBalance()).isEqualTo(350));
     }
 
     @Test
