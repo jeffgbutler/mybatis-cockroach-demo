@@ -66,6 +66,26 @@ public class MyBatisAccountService implements AccountService {
         return new BatchResults(results.size(), calculateRowsAffectedByMultipleBatches(results));
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public BatchResults bulkInsertRandomAccountData(int numberToInsert, int batchSize) {
+        List<List<BatchResult>> results = new ArrayList<>();
+
+        for (int i = 0; i < numberToInsert; i++) {
+            Account account = new Account();
+            account.setId(random.nextInt(1000000000));
+            account.setBalance(random.nextInt(1000000000));
+            batchMapper.insertAccount(account);
+            if ((i + 1) % batchSize == 0) {
+                results.add(batchMapper.flush());
+            }
+        }
+        if(numberToInsert % batchSize != 0) {
+            results.add(batchMapper.flush());
+        }
+        return new BatchResults(results.size(), calculateRowsAffectedByMultipleBatches(results));
+    }
+
     private int calculateRowsAffectedByMultipleBatches(List<List<BatchResult>> results) {
         return results.stream()
             .mapToInt(this::calculateRowsAffectedBySingleBatch)

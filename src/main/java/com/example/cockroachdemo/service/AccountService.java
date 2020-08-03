@@ -9,6 +9,7 @@ public interface AccountService {
     void createAccountsTable();
     Optional<Account> getAccount(int id);
     BatchResults bulkInsertRandomAccountData(int numberToInsert);
+    BatchResults bulkInsertRandomAccountData(int numberToInsert, int batchSize);
     BatchResults addAccounts(Account...accounts);
     int transferFunds(int fromAccount, int toAccount, int amount);
     long findCountOfAccounts();

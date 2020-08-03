@@ -97,6 +97,14 @@ class CockroachDemoApplicationTests {
     }
 
     @Test
+    public void testMassInsert500WithMultipleBatches() {
+        BatchResults results = accountService.bulkInsertRandomAccountData(500, 128);
+        assertThat(results.getNumberOfBatches()).isEqualTo(4);
+        assertThat(results.getTotalRowsAffected()).isEqualTo(500);
+        assertThat(accountService.findCountOfAccounts()).isEqualTo(500);
+    }
+
+    @Test
     public void testMassInsertWith128() {
         BatchResults results = accountService.bulkInsertRandomAccountData(128);
         assertThat(results.getNumberOfBatches()).isEqualTo(1);
